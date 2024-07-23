@@ -24,22 +24,6 @@ function useJWT() {
         .post("http://127.0.0.1:4000/api/login", { email, password })
         .then((response) => console.log("response:", response));
     });
-    // getData(email, password);
-
-    // fetchPromise
-    //   .then((response) => response.body)
-    //   .then((body) => {
-    //     const reader = body.getReader();
-    //     console.log("reader:", reader);
-    //     // resolve(data);
-    //     // localStorage.setItem("access", JSON.stringify(data.access));
-    //     // localStorage.setItem("refresh", JSON.stringify(data.refresh));
-    //   })
-    //   .catch((error) => {
-    //     // reject(error);
-    //     console.log("error:", error);
-    //   });
-    // });
   }
 
   const sendPostRequest = (url, data) => {
