@@ -17,32 +17,6 @@ function useJWT() {
       });
   };
 
-  // async function getData(email, password) {
-  //   const request = new Request("http://127.0.0.1:4000/api/login", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       email,
-  //       password,
-  //     }),
-  //     headers: {
-  //       "Content-type": "application/json; charset=UTF-8",
-  //     },
-  //   });
-  //   try {
-  //     const response = await fetch(request);
-  //     if (!response.ok) {
-  //       throw new Error(`Response Status: ${response.status}`);
-  //     } else {
-  //       const json = await response.json();
-  //       localStorage.setItem("access", JSON.stringify(json.access));
-  //       localStorage.setItem("refresh", JSON.stringify(json.refresh));
-  //       console.log("json", json);
-  //     }
-  //   } catch (error) {
-  //     console.log("error:", error.message);
-  //   }
-  // }
-
   function login(email, password) {
     const axios = require("axios");
     return new Promise((resolve, reject) => {
