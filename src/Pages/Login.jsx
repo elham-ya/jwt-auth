@@ -10,21 +10,54 @@ import useJWT from "../Hooks/useJWT";
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [checked, setChecked] = useState(false);
   const { login } = useJWT();
-  const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (email && password) {
-      login(email, password).then(() => {
-        navigate("/");
-      });
+    if (email && password && checked) {
+      login(email, password);
     }
   };
-  const [disable, setDisable] = useState(true);
-  const handleDisabledButton = (e) => {
-    if (e) {
-      setDisable(false);
-    } else setDisable(true);
+
+  const [disable, setDisable] = useState({
+    userName: true,
+    password: true,
+  });
+
+  const handleChangeUserNameInput = (e) => {
+    if (e && e.target.value && e.target.value.trim().length !== 0) {
+      setDisable((prev) => ({ ...prev, userName: false }));
+    } else {
+      setDisable((prev) => ({ ...prev, userName: true }));
+    }
+  };
+
+  const handleChangeUserPassword = (e) => {
+    if (e && e.target.value && e.target.value.trim().length !== 0) {
+      setDisable((prev) => ({ ...prev, password: false }));
+    } else {
+      setDisable((prev) => ({ ...prev, password: true }));
+    }
+  };
+
+  const handleButtonDisable = () => {
+    if (checked) {
+      if (disable.userName && disable.password) {
+        return true;
+      } else if (disable.userName && !disable.password) {
+        return true;
+      } else if (!disable.userName && disable.password) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
+  const handleNoRobotCheck = (event) => {
+    setChecked(event.target.checked);
   };
 
   return (
@@ -35,10 +68,13 @@ const Login = (props) => {
         label="✉️ Email"
         type="email"
         defaultValue={email}
-        onBlur={(event) => setEmail(event.target.value)}
+        onBlur={(event) => {
+          setEmail(event.target.value);
+        }}
         autoFocus
         tabIndex="1"
         pattern=".+@example\.com"
+        onChange={handleChangeUserNameInput}
       />
       <Input
         data-testid="password"
@@ -49,13 +85,17 @@ const Login = (props) => {
           setPassword(e.target.value);
         }}
         tabIndex="2"
-        onChange={handleDisabledButton}
+        onChange={handleChangeUserPassword}
       />
 
-      <NotRobot checked={false} onChange={() => {}} />
+      <NotRobot checked={checked} onChange={handleNoRobotCheck} />
       <ErrorMessage />
 
-      <LoginButton type="button" onClick={handleLogin} disabled={disable} />
+      <LoginButton
+        type="button"
+        onClick={handleLogin}
+        disabled={handleButtonDisable()}
+      />
     </Card>
   );
 };

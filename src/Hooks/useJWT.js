@@ -1,20 +1,27 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function useJWT() {
+  const navigate = useNavigate();
   const refreshToken = () => {
     let refresh = localStorage.getItem("refresh");
     const axios = require("axios");
-    axios
-      .post("http://127.0.0.1:4000/api/token", {
-        token: refresh,
-      })
-      .then((response) => {
-        localStorage.setItem("access", JSON.stringify(response.data.access));
-        localStorage.setItem("refresh", JSON.stringify(response.data.refresh));
-      })
-      .catch(function (error) {
-        console.log("error:", error);
-      });
+    return new Promise((resolve, reject) => {
+      axios
+        .post("http://127.0.0.1:4000/api/token", {
+          token: refresh,
+        })
+        .then((response) => {
+          localStorage.setItem("access", JSON.stringify(response.data.access));
+          localStorage.setItem(
+            "refresh",
+            JSON.stringify(response.data.refresh)
+          );
+        })
+        .catch(function (error) {
+          console.log("error:", error);
+        });
+    });
   };
 
   function login(email, password) {
@@ -22,17 +29,28 @@ function useJWT() {
     return new Promise((resolve, reject) => {
       axios
         .post("http://127.0.0.1:4000/api/login", { email, password })
-        .then((response) => console.log("response:", response));
+        .then((response) => {
+          localStorage.setItem("access", JSON.stringify(response.data.access));
+          localStorage.setItem(
+            "refresh",
+            JSON.stringify(response.data.refresh)
+          );
+          navigate("/");
+        })
+        .catch(function (error) {
+          console.log("error:", error);
+        });
     });
   }
 
   const sendPostRequest = (url, data) => {
+    let access = localStorage.getItem("access");
     const sendRequest = fetch(url, {
       method: "POST",
       body: data,
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        jwt: "",
+        jwt: access,
       },
     });
   };
@@ -41,9 +59,13 @@ function useJWT() {
 
   const logout = () => {
     const axios = require("axios");
-    axios.delete("http://127.0.0.1:4000/api/logout", {
-      refresh,
-    });
+    axios
+      .delete("http://127.0.0.1:4000/api/logout", {
+        refresh,
+      })
+      .then(() => {
+        navigate("/login");
+      });
 
     localStorage.clear();
   };
