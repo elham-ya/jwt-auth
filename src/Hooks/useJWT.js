@@ -27,19 +27,21 @@ function useJWT() {
   function login(email, password) {
     const axios = require("axios");
     return new Promise((resolve, reject) => {
-      axios
-        .post("http://127.0.0.1:4000/api/login", { email, password })
-        .then((response) => {
+      axios.post("http://127.0.0.1:4000/api/login", { email, password }).then(
+        (response) => {
           localStorage.setItem("access", JSON.stringify(response.data.access));
           localStorage.setItem(
             "refresh",
             JSON.stringify(response.data.refresh)
           );
           navigate("/");
-        })
-        .catch(function (error) {
+          resolve();
+        },
+        function (error) {
           console.log("error:", error);
-        });
+          reject();
+        }
+      );
     });
   }
 
