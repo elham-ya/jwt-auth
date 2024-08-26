@@ -11,7 +11,7 @@ function useJWT() {
     return new Promise((resolve, reject) => {
       axios
         .post(url, {
-          token: refresh,
+          "token": refresh,
         })
         .then((response) => {
           localStorage.setItem("access", JSON.stringify(response.data.access));
@@ -36,11 +36,8 @@ function useJWT() {
       axios.post(url, { email, password }).then(
         (response) => {
           localStorage.setItem("access", JSON.stringify(response.data.access));
-          localStorage.setItem(
-            "refresh",
-            JSON.stringify(response.data.refresh)
-          );
-          navigate("/");
+          localStorage.setItem("refresh",JSON.stringify(response.data.refresh));
+          // navigate("/");
           resolve(response);
         },
         function (error) {
@@ -67,6 +64,8 @@ function useJWT() {
           resolve(response);
         })
         .catch((error) => {
+          reject(error);
+          
           // here we should send another request just one time
         });
     });

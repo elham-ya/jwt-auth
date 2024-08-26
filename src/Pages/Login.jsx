@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../Components/Card";
 import Input from "../Components/Input";
@@ -11,18 +11,29 @@ const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checked, setChecked] = useState(false);
-  const { login } = useJWT();
-
-  const handleLogin = () => {
-    if (email && password && checked) {
-      login(email, password);
-    }
-  };
-
+  const [flag, setFlag] = useState(false);
   const [disable, setDisable] = useState({
     userName: true,
     password: true,
   });
+  const { login } = useJWT();
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    if (email && password && checked) {
+      login(email, password)
+        .then(() => {
+          navigate("/");
+        })
+        .catch(() => {
+          console.log("catch:");
+          setFlag(true);
+          setPassword("");
+        });
+    }
+  };
+  console.log("flag in public:", flag);
+  
 
   const handleChangeUserNameInput = (e) => {
     if (e && e.target.value && e.target.value.trim().length !== 0) {
@@ -60,6 +71,15 @@ const Login = (props) => {
     setChecked(event.target.checked);
   };
 
+  useEffect(() => {
+    console.log("flag:", flag);
+    if (flag) {
+      console.log("asasa");
+      setPassword("");
+    }
+    console.log("password:", password);
+  }, [flag]);
+
   return (
     <Card>
       <h3>Login</h3>
@@ -80,6 +100,7 @@ const Login = (props) => {
         data-testid="password"
         label="🔑 Password"
         type="password"
+        // value
         defaultValue={password}
         onBlur={(e) => {
           setPassword(e.target.value);
@@ -89,7 +110,7 @@ const Login = (props) => {
       />
 
       <NotRobot checked={checked} onChange={handleNoRobotCheck} />
-      <ErrorMessage />
+      {flag && <ErrorMessage />}
 
       <LoginButton
         type="button"
