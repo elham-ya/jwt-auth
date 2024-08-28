@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 function useJWT() {
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   if(tokenExpired) {
+  //     refreshToken()
+  //   }
+  // },[])
+
   const refreshToken = () => {
     const url = "http://127.0.0.1:4000/api/token";
     const refresh = localStorage.getItem("refresh");

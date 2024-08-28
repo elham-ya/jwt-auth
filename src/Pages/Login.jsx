@@ -44,7 +44,7 @@ const Login = () => {
       ...prev,
       [name]: value,
     }));
-    if (e && e.target.value && e.target.value.trim().length !== 0) {
+    if (e && value && value.trim().length !== 0) {
       setDisable((prev) => ({ ...prev, [name]: false }));
     } else {
       setDisable((prev) => ({ ...prev, [name]: true }));
@@ -53,7 +53,7 @@ const Login = () => {
 
   const handleButtonDisable = () => {
     if (checked) {
-      if (disable.userName || disable.password) {
+      if (disable.userName || disable.userPassword) {
         return true;
       } else {
         return false;
