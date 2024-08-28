@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../Components/Card";
 import Input from "../Components/Input";
@@ -7,57 +7,53 @@ import LoginButton from "../Components/LoginButtons";
 import ErrorMessage from "../Components/ErrorMessage";
 import useJWT from "../Hooks/useJWT";
 
-const Login = (props) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checked, setChecked] = useState(false);
-  const [flag, setFlag] = useState(false);
-  const [disable, setDisable] = useState({
-    userName: true,
-    password: true,
-  });
+const Login = () => {
   const { login } = useJWT();
   const navigate = useNavigate();
+  const [input, setInput] = useState({
+    userName: "",
+    userPassword: "",
+  });
+  const [disable, setDisable] = useState({
+    userName: true,
+    userPassword: true,
+  });
+  const [checked, setChecked] = useState(false);
+  const [flag, setFlag] = useState(false);
 
   const handleLogin = () => {
-    if (email && password && checked) {
-      login(email, password)
+    if (input.userName && input.userPassword && checked) {
+      login(input.userName, input.userPassword)
         .then(() => {
           navigate("/");
         })
         .catch(() => {
-          console.log("catch:");
           setFlag(true);
-          setPassword("");
+          setInput((prev) => ({
+            ...prev,
+            userPassword: "",
+          }));
+          setDisable((prev) => ({ ...prev, userPassword: true }));
         });
     }
   };
-  console.log("flag in public:", flag);
-  
 
-  const handleChangeUserNameInput = (e) => {
+  const handleChangeInput = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
     if (e && e.target.value && e.target.value.trim().length !== 0) {
-      setDisable((prev) => ({ ...prev, userName: false }));
+      setDisable((prev) => ({ ...prev, [name]: false }));
     } else {
-      setDisable((prev) => ({ ...prev, userName: true }));
-    }
-  };
-
-  const handleChangeUserPassword = (e) => {
-    if (e && e.target.value && e.target.value.trim().length !== 0) {
-      setDisable((prev) => ({ ...prev, password: false }));
-    } else {
-      setDisable((prev) => ({ ...prev, password: true }));
+      setDisable((prev) => ({ ...prev, [name]: true }));
     }
   };
 
   const handleButtonDisable = () => {
     if (checked) {
-      if (disable.userName && disable.password) {
-        return true;
-      } else if (disable.userName && !disable.password) {
-        return true;
-      } else if (!disable.userName && disable.password) {
+      if (disable.userName || disable.password) {
         return true;
       } else {
         return false;
@@ -67,46 +63,39 @@ const Login = (props) => {
     }
   };
 
+
   const handleNoRobotCheck = (event) => {
     setChecked(event.target.checked);
   };
-
-  useEffect(() => {
-    console.log("flag:", flag);
-    if (flag) {
-      console.log("asasa");
-      setPassword("");
-    }
-    console.log("password:", password);
-  }, [flag]);
-
+  console.log("disable:", disable);
   return (
     <Card>
       <h3>Login</h3>
       <Input
+        name="userName"
         data-testid="email"
         label="✉️ Email"
         type="email"
-        defaultValue={email}
-        onBlur={(event) => {
-          setEmail(event.target.value);
-        }}
+        defaultValue={input.userName}
+        // onBlur={(event) => {
+        //   setEmail(event.target.value);
+        // }}
         autoFocus
         tabIndex="1"
         pattern=".+@example\.com"
-        onChange={handleChangeUserNameInput}
+        onChange={handleChangeInput}
       />
       <Input
+        name="userPassword"
         data-testid="password"
         label="🔑 Password"
         type="password"
-        // value
-        defaultValue={password}
-        onBlur={(e) => {
-          setPassword(e.target.value);
-        }}
+        value={input.userPassword}
+        // onBlur={(e) => {
+        //   setPassword(e.target.value);
+        // }}
         tabIndex="2"
-        onChange={handleChangeUserPassword}
+        onChange={handleChangeInput}
       />
 
       <NotRobot checked={checked} onChange={handleNoRobotCheck} />

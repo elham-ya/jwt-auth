@@ -1,5 +1,4 @@
 import React from "react";
-
 import Row from "../Components/Row";
 import UserData from "../Components/UserData";
 import LogoutButton from "../Components/LogoutButton";
@@ -8,6 +7,8 @@ import useJWT from "../Hooks/useJWT";
 const Profile = () => {
   const { logout } = useJWT();
   const [user, setUser] = React.useState({});
+
+  const token = localStorage.getItem('')
 
   return (
     <div className="container">
