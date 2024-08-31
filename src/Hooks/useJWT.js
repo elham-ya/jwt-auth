@@ -13,11 +13,10 @@ function useJWT() {
     const url = "http://127.0.0.1:4000/api/token";
     const refresh = localStorage.getItem("refresh");
     const axios = require("axios");
-
     return new Promise((resolve, reject) => {
       axios
         .post(url, {
-          "token": refresh,
+          token: refresh,
         })
         .then((response) => {
           localStorage.setItem("access", JSON.stringify(response.data.access));
@@ -28,7 +27,6 @@ function useJWT() {
           resolve(response);
         })
         .catch((error) => {
-          console.log("error:", error);
           reject(error);
         });
     });
@@ -37,13 +35,14 @@ function useJWT() {
   function login(email, password) {
     const url = "http://127.0.0.1:4000/api/login";
     const axios = require("axios");
-
     return new Promise((resolve, reject) => {
       axios.post(url, { email, password }).then(
         (response) => {
           localStorage.setItem("access", JSON.stringify(response.data.access));
-          localStorage.setItem("refresh",JSON.stringify(response.data.refresh));
-          // navigate("/");
+          localStorage.setItem(
+            "refresh",
+            JSON.stringify(response.data.refresh)
+          );
           resolve(response);
         },
         function (error) {
@@ -54,25 +53,26 @@ function useJWT() {
   }
 
   // sendPostRequest NOT done
-  const sendPostRequest = (url, data) => {
+  const sendPostRequest = (url, accessToken) => {
     const axios = require("axios");
-    const access = localStorage.getItem("access");
 
     return new Promise((resolve, reject) => {
       axios
-        .post(url, data, {
-          headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-            jwt: access,
-          },
-        })
+        .post(
+          url,
+          { access: accessToken },
+          {
+            headers: {
+              "Content-Type": "application/json; charset=UTF-8",
+              jwt: accessToken,
+            },
+          }
+        )
         .then((response) => {
           resolve(response);
         })
         .catch((error) => {
           reject(error);
-          
-          // here we should send another request just one time
         });
     });
   };

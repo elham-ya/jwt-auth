@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../Components/Card";
 import Input from "../Components/Input";
@@ -22,7 +22,7 @@ const Login = () => {
   const [flag, setFlag] = useState(false);
 
   const handleLogin = () => {
-    if (input.userName && input.userPassword && checked) {
+    if (input.userName && input.userPassword) {
       login(input.userName, input.userPassword)
         .then(() => {
           navigate("/");
@@ -52,22 +52,25 @@ const Login = () => {
   };
 
   const handleButtonDisable = () => {
-    if (checked) {
-      if (disable.userName || disable.userPassword) {
+    if (flag) {
+      if (disable.userName || disable.userPassword || !checked) {
         return true;
       } else {
         return false;
       }
     } else {
-      return true;
+      if (disable.userName || disable.userPassword) {
+        return true;
+      } else {
+        return false;
+      }
     }
   };
-
 
   const handleNoRobotCheck = (event) => {
     setChecked(event.target.checked);
   };
-  console.log("disable:", disable);
+
   return (
     <Card>
       <h3>Login</h3>
@@ -97,9 +100,12 @@ const Login = () => {
         tabIndex="2"
         onChange={handleChangeInput}
       />
-
-      <NotRobot checked={checked} onChange={handleNoRobotCheck} />
-      {flag && <ErrorMessage />}
+      {flag && (
+        <>
+          <NotRobot checked={checked} onChange={handleNoRobotCheck} />
+          <ErrorMessage />
+        </>
+      )}
 
       <LoginButton
         type="button"
