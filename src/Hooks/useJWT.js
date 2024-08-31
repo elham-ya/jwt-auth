@@ -3,12 +3,6 @@ import { useNavigate } from "react-router-dom";
 function useJWT() {
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if(tokenExpired) {
-  //     refreshToken()
-  //   }
-  // },[])
-
   const refreshToken = () => {
     const url = "http://127.0.0.1:4000/api/token";
     const refresh = localStorage.getItem("refresh");
@@ -52,10 +46,8 @@ function useJWT() {
     });
   }
 
-  // sendPostRequest NOT done
   const sendPostRequest = (url, accessToken) => {
     const axios = require("axios");
-
     return new Promise((resolve, reject) => {
       axios
         .post(
@@ -81,7 +73,6 @@ function useJWT() {
     const url = "http://127.0.0.1:4000/api/logout";
     const axios = require("axios");
     const refresh = localStorage.getItem("refresh");
-
     return new Promise((resolve, reject) => {
       axios
         .delete(url, {
