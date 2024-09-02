@@ -53,13 +53,13 @@ const Login = () => {
 
   const handleButtonDisable = () => {
     if (flag) {
-      if (disable.userName || disable.userPassword || !checked) {
+      if (disable.userName || disable.userPassword || !checked || !validateEmail(input.userName)) {
         return true;
       } else {
         return false;
       }
     } else {
-      if (disable.userName || disable.userPassword) {
+      if (disable.userName || disable.userPassword || !validateEmail(input.userName)) {
         return true;
       } else {
         return false;
@@ -71,6 +71,20 @@ const Login = () => {
     setChecked(event.target.checked);
   };
 
+  const validateEmail = (email) => {
+    if (
+      String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ) {
+
+      return true;
+    }
+    return false
+  };
+
   return (
     <Card>
       <h3>Login</h3>
@@ -80,9 +94,6 @@ const Login = () => {
         label="✉️ Email"
         type="email"
         defaultValue={input.userName}
-        // onBlur={(event) => {
-        //   setEmail(event.target.value);
-        // }}
         autoFocus
         tabIndex="1"
         pattern=".+@example\.com"
@@ -94,9 +105,6 @@ const Login = () => {
         label="🔑 Password"
         type="password"
         value={input.userPassword}
-        // onBlur={(e) => {
-        //   setPassword(e.target.value);
-        // }}
         tabIndex="2"
         onChange={handleChangeInput}
       />
