@@ -19,13 +19,14 @@ const Profile = () => {
           setUser(data);
         })
         .catch(() => {
-          refreshToken().then(() => {
-            sendPostRequest("http://127.0.0.1:4000/api/user", token).then(
-              (res) => {
-                const data = res.json().data.user;
-                setUser(data);
-              }
-            );
+          refreshToken().then((res) => {
+            sendPostRequest(
+              "http://127.0.0.1:4000/api/user",
+              JSON.stringify(res.data.access)
+            ).then((res) => {
+              const data = res.json().data.user;
+              setUser(data);
+            });
           });
         });
     } else {
